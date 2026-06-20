@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pankaj And Deepak Ice Factory</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
+
+body{
+background:linear-gradient(rgba(0,40,80,.85),rgba(0,40,80,.85)),
+url('https://images.unsplash.com/photo-1515705576963-95cad62945b6?auto=format&fit=crop&w=1600&q=80');
+background-size:cover;
+background-position:center;
+color:white;
+min-height:100vh;
+padding-top:90px;
+padding-bottom:90px;
+}
+
+header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+background:rgba(0,0,0,0.5);
+backdrop-filter:blur(10px);
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px 18px;
+}
+
+.logo{font-size:18px;font-weight:bold;}
+.logo small{display:block;font-size:12px;opacity:.9}
+
+.btn{
+background:#00cfff;
+border:none;
+padding:10px 14px;
+border-radius:8px;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+footer{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+text-align:center;
+padding:10px;
+font-size:12px;
+}
+
+.container{max-width:1200px;margin:auto;padding:15px;}
+
+.card{
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(10px);
+padding:18px;
+border-radius:15px;
+margin-top:15px;
+}
+
+input,textarea{
+width:100%;
+padding:10px;
+margin-top:8px;
+border:none;
+border-radius:8px;
+}
+
+button{
+padding:10px 14px;
+background:#00cfff;
+border:none;
+border-radius:8px;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+font-size:13px;
+}
+
+th,td{
+border:1px solid rgba(255,255,255,.2);
+padding:6px;
+text-align:center;
+}
+
+#adminPanel{display:none;}
+
+#loginBox{
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+color:black;
+padding:20px;
+border-radius:10px;
+width:300px;
+z-index:999;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:10px;
+}
+
+.stat{
+background:rgba(255,255,255,.12);
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">
+❄ Pankaj And Deepak Ice Factory
+<small>📞 +91 7250566364 | +91 9162416997 | 📍 Gopalganj</small>
+</div>
+<button class="btn" onclick="openLogin()">Admin</button>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>🧊 Ice Products</h2>
+<p>🚚 Self Pickup Only | No Delivery</p>
+<p>💵 Payment: Pay at Pickup Point</p>
+<p>🧊 20KG: ₹<span id="p25">150</span> | 50KG: ₹<span id="p50">350</span></p>
+</div>
+
+<div class="card">
+<h2>Place Order</h2>
+
+<input id="name" placeholder="Customer Name">
+<input id="phone" placeholder="Phone Number">
+
+<label>20 KG</label>
+<input type="number" id="q20" value="0">
+
+<label>50 KG</label>
+<input type="number" id="q50" value="0">
+
+<label>Date of Delivery</label>
+<input type="date" id="date">
+
+<textarea id="addr" placeholder="Address"></textarea>
+
+<button onclick="placeOrder()">Submit Order</button>
+</div>
+
+<div class="card">
+<h2>Customer Orders</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th><th>Name</th><th>25</th><th>50</th><th>Date</th><th>Total</th><th>Status</th>
+</tr>
+</thead>
+<tbody id="orders"></tbody>
+</table>
+</div>
+
+<!-- ADMIN -->
+<div id="adminPanel">
+
+<div class="card">
+<h2>📊 Dashboard</h2>
+<div class="stats">
+<div class="stat"><h3 id="t">0</h3><p>Total</p></div>
+<div class="stat"><h3 id="p">0</h3><p>Pending</p></div>
+<div class="stat"><h3 id="c">0</h3><p>Completed</p></div>
+</div>
+</div>
+
+<div class="card">
+<h2>Manage Orders</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th><th>Phone</th><th>25</th><th>50</th><th>Date</th><th>Status</th><th>Action</th>
+</tr>
+</thead>
+<tbody id="adminOrders"></tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>💰 Price Control</h2>
+<input id="e20" placeholder="20KG Price">
+<input id="e50" placeholder="50KG Price">
+<button onclick="updatePrice()">Update Price</button>
+</div>
+
+<div class="card">
+<h2>🔐 Change Admin PIN</h2>
+<input id="newPin" placeholder="New PIN">
+<button onclick="changePin()">Update PIN</button>
+</div>
+
+</div>
+
+</div>
+
+<!-- LOGIN -->
+<div id="loginBox">
+<h3>Enter Admin PIN</h3>
+<input id="pin" type="password" placeholder="Enter PIN">
+<button onclick="login()">Login</button>
+</div>
+
+<footer>
+❄ Pankaj And Deepak Ice Factory | 📞 +91 7250566364 | +91 9162416997 | 📍 Gopalganj
+</footer>
+
+<script>
+
+let price20 = 150;
+let price50 = 350;
+
+let adminPin = localStorage.getItem("pin") || "1234";
+
+let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+function save(){
+localStorage.setItem("orders",JSON.stringify(orders));
+}
+
+function placeOrder(){
+
+let q20 = +document.getElementById("q20").value;
+let q50 = +document.getElementById("q50").value;
+
+let total = (q20*price20)+(q50*price50);
+
+orders.push({
+id:Date.now(),
+name:document.getElementById("name").value,
+phone:document.getElementById("phone").value,
+q20,q50,
+date:document.getElementById("date").value,
+addr:document.getElementById("addr").value,
+total,
+status:"Pending"
+});
+
+save();
+render();
+alert("Order Placed ₹"+total);
+}
+
+function render(){
+
+let html="";
+orders.forEach(o=>{
+html+=`
+<tr>
+<td>${o.id}</td>
+<td>${o.name}</td>
+<td>${o.q20}</td>
+<td>${o.q50}</td>
+<td>${o.date}</td>
+<td>₹${o.total}</td>
+<td>${o.status}</td>
+</tr>`;
+});
+
+document.getElementById("orders").innerHTML=html;
+renderAdmin();
+stats();
+}
+
+function renderAdmin(){
+
+let html="";
+orders.forEach((o,i)=>{
+html+=`
+<tr>
+<td><input value="${o.name}" onchange="edit(${i},'name',this.value)"></td>
+<td>${o.phone}</td>
+<td><input value="${o.q20}" onchange="edit(${i},'q20',this.value)"></td>
+<td><input value="${o.q50}" onchange="edit(${i},'q50',this.value)"></td>
+<td><input type="date" value="${o.date}" onchange="edit(${i},'date',this.value)"></td>
+<td>
+<select onchange="edit(${i},'status',this.value)">
+<option ${o.status=="Pending"?"selected":""}>Pending</option>
+<option ${o.status=="Completed"?"selected":""}>Completed</option>
+</select>
+</td>
+<td><button onclick="del(${i})">Delete</button></td>
+</tr>`;
+});
+
+document.getElementById("adminOrders").innerHTML=html;
+}
+
+function edit(i,k,v){
+orders[i][k]=v;
+save();
+render();
+}
+
+function del(i){
+orders.splice(i,1);
+save();
+render();
+}
+
+function stats(){
+document.getElementById("t").innerText=orders.length;
+document.getElementById("p").innerText=orders.filter(o=>o.status=="Pending").length;
+document.getElementById("c").innerText=orders.filter(o=>o.status=="Completed").length;
+}
+
+function updatePrice(){
+price20=+document.getElementById("e20").value||price20;
+price50=+document.getElementById("e50").value||price50;
+alert("Price Updated");
+}
+
+function openLogin(){
+document.getElementById("loginBox").style.display="block";
+}
+
+function login(){
+let pin=document.getElementById("pin").value;
+
+if(pin===adminPin){
+document.getElementById("adminPanel").style.display="block";
+document.getElementById("loginBox").style.display="none";
+render();
+}else alert("Wrong PIN");
+}
+
+function changePin(){
+let newPin=document.getElementById("newPin").value;
+adminPin=newPin;
+localStorage.setItem("pin",newPin);
+alert("PIN Updated");
+}
+
+render();
+
+</script>
+
+</body>
+</html>
